@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 3 Monday Practice Quiz</title>
+    <style>
+        /* --- Color Variables --- */
+        :root {
+            /* Default: Dark Theme */
+            --bg-color: #2d343e; /* Dark background */
+            --container-bg: #3c424f; /* Slightly lighter container */
+            --text-color: #e8e6e3; /* Light text */
+            --question-text-color: #8ab4f8; /* Light blue for questions */
+            --lo-text-color: #b0c4de; /* Lighter blue for learning objective */
+            --border-color: #555; /* Darker borders */
+            --separator-color: #4a4f5a;
+            --label-bg: #454c5a;
+            --label-border: #6c757d;
+            --label-hover-bg: #525966;
+            --label-hover-border: #7a828a;
+            --button-bg: #8ab4f8;
+            --button-text: #202124;
+            --button-hover-bg: #a3c5f9;
+            --button-disabled-bg: #5f6368;
+            --feedback-correct-bg: #344e41;
+            --feedback-correct-text: #c7f9cc;
+            --feedback-correct-border: #52b788;
+            --feedback-incorrect-bg: #5e2129;
+            --feedback-incorrect-text: #f8d7da;
+            --feedback-incorrect-border: #a4133c;
+            --feedback-rationale-text: #adb5bd; /* Lighter gray for rationale */
+            --feedback-source-text: #c7d3e0;
+            --feedback-separator: #6c757d;
+            --radio-accent: #8ab4f8;
+        }
+
+        .light-theme {
+            --bg-color: #eef2f7;
+            --container-bg: #ffffff;
+            --text-color: #343a40;
+            --question-text-color: #0056b3;
+            --lo-text-color: #5a6e8a;
+            --border-color: #dee2e6;
+            --separator-color: #e9ecef;
+            --label-bg: #f8f9fa;
+            --label-border: #ced4da;
+            --label-hover-bg: #e2e6ea;
+            --label-hover-border: #adb5bd;
+            --button-bg: #007bff;
+            --button-text: white;
+            --button-hover-bg: #0056b3;
+            --button-disabled-bg: #6c757d;
+            --feedback-correct-bg: #d1e7dd;
+            --feedback-correct-text: #0f5132;
+            --feedback-correct-border: #badbcc;
+            --feedback-incorrect-bg: #f8d7da;
+            --feedback-incorrect-text: #842029;
+            --feedback-incorrect-border: #f5c2c7;
+            --feedback-rationale-text: #495057;
+            --feedback-source-text: #343a40;
+            --feedback-separator: #ccc;
+            --radio-accent: #007bff;
+        }
+
+        /* --- General Styles --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.7;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 40px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #theme-toggle-button {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            padding: 8px 12px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: 1px solid var(--label-border);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            z-index: 1000;
+             transition: background-color 0.3s, color 0.3s;
+        }
+         #theme-toggle-button:hover {
+             opacity: 0.8;
+         }
+
+
+        #quiz-container {
+            max-width: 900px;
+            margin: 80px auto 30px auto;
+            background: var(--container-bg);
+            padding: 25px 35px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-block {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--separator-color);
+            transition: border-color 0.3s;
+        }
+
+        .question-block:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 5px;
+        }
+        
+        .learning-objective {
+            font-size: 0.85em;
+            font-style: italic;
+            color: var(--lo-text-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--separator-color);
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 18px;
+            color: var(--question-text-color);
+            transition: color 0.3s;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 12px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--label-border);
+            background-color: var(--label-bg);
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+
+        .options label:hover {
+            background-color: var(--label-hover-bg);
+            border-color: var(--label-hover-border);
+        }
+
+        .options input[type="radio"]:checked+span {
+             font-weight: bold;
+             color: var(--question-text-color);
+        }
+        .options input[type="radio"] {
+            margin-right: 12px;
+            accent-color: var(--radio-accent);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .check-button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background-color 0.2s, color 0.2s, opacity 0.2s;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+        }
+
+        .check-button:hover {
+            opacity: 0.85;
+        }
+
+         .check-button:disabled {
+             background-color: var(--button-disabled-bg);
+             cursor: not-allowed;
+             opacity: 0.7;
+         }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            display: none;
+            border: 1px solid transparent;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .feedback.correct {
+            background-color: var(--feedback-correct-bg);
+            color: var(--feedback-correct-text);
+            border-color: var(--feedback-correct-border);
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: var(--feedback-incorrect-bg);
+            color: var(--feedback-incorrect-text);
+            border-color: var(--feedback-incorrect-border);
+            display: block;
+        }
+
+        .feedback-status {
+             font-weight: bold;
+             font-size: 1.1em;
+             display: block;
+             margin-bottom: 8px;
+        }
+
+        .feedback-rationale {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--feedback-separator);
+            font-size: 0.9em;
+            color: var(--feedback-rationale-text);
+            transition: color 0.3s, border-color 0.3s;
+        }
+        
+        .feedback-source {
+            margin-top: 10px;
+            font-size: 0.85em;
+            font-style: italic;
+            color: var(--feedback-source-text);
+            background-color: rgba(0,0,0,0.1);
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--question-text-color);
+            margin-top: 30px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+    </style>
+</head>
+<body>
+
+    <button id="theme-toggle-button">Toggle Theme</button>
+    <h1>Week 3 Monday Practice Quiz</h1>
+
+    <div id="quiz-container">
+        <!-- Questions will be loaded here by JavaScript -->
+    </div>
+
+    <script>
+        const quizData = [
+    {
+        learningObjective: "LO1 (Bioenergetics): Explain the term 'Bioenergetics' and basic principles governing catabolism and anabolism.",
+        question: "A medical student observes the synthesis of triglycerides from fatty acids and glycerol for storage in adipose tissue in a well-fed individual. Which of the following best describes this metabolic process in terms of bioenergetics?",
+        options: { 
+            A: "Catabolic and exergonic", 
+            B: "Anabolic and exergonic", 
+            C: "Catabolic and endergonic", 
+            D: "Anabolic and endergonic" 
+        },
+        correctAnswer: "D",
+        rationale: "The synthesis of complex molecules (triglycerides) from simpler ones (fatty acids, glycerol) is an anabolic process. Anabolic reactions require an input of energy to proceed, making them endergonic (having a positive ΔG). Catabolic reactions, in contrast, break down complex molecules and release energy (exergonic).",
+        source: "'Endergonic reactions: ΔG⁰ is positive, anabolic reactions.' (Bioenergetics, Page 5) and 'Anabolic reactions transfer energy from ATP to complex molecules.' (Bioenergetics, Page 6)"
+    },
+    {
+        learningObjective: "LO1 (Bioenergetics): Explain the term 'Bioenergetics' and basic principles governing catabolism and anabolism.",
+        question: "During a marathon, a runner's muscle cells break down glycogen into glucose, which is then oxidized to produce ATP. This breakdown of a complex carbohydrate into simpler molecules to release energy is an example of what type of reaction?",
+        options: { 
+            A: "Anabolic", 
+            B: "Catabolic", 
+            C: "Isomerization", 
+            D: "Reduction" 
+        },
+        correctAnswer: "B",
+        rationale: "Catabolism is the set of metabolic pathways that breaks down complex molecules into simpler units to release energy. The breakdown of glycogen for energy production is a classic example of a catabolic process. Anabolism is the synthesis of complex molecules, which requires energy.",
+        source: "'Catabolic reactions transfer energy from complex molecules to ATP.' (Bioenergetics, Page 6)"
+    },
+    {
+        learningObjective: "LO1 (Bioenergetics): Explain the term 'Bioenergetics' and basic principles governing catabolism and anabolism.",
+        question: "In a cell, the energy required for the synthesis of protein from amino acids (an endergonic process) is typically supplied directly by the hydrolysis of which of the following molecules?",
+        options: { 
+            A: "ATP", 
+            B: "NADH", 
+            C: "FADH2", 
+            D: "Glucose" 
+        },
+        correctAnswer: "A",
+        rationale: "Endergonic (anabolic) reactions are driven by coupling them with exergonic (catabolic) reactions. The hydrolysis of ATP to ADP and inorganic phosphate (Pi) is a highly exergonic reaction that releases a significant amount of free energy. This energy is harnessed by the cell to power numerous endergonic processes, including protein synthesis.",
+        source: "'A working muscle recycles over 10 million ATPs per second.' (Bioenergetics, Page 10) This illustrates the central role of ATP as the immediate energy currency for coupling reactions."
+    },
+    {
+        learningObjective: "LO2 (Bioenergetics): Explain the link between the major catabolic pathways, TCA cycle, and electron transport chain to ATP synthesis in the mitochondria.",
+        question: "A 45-year-old man with a rare genetic disorder has a defect in the pyruvate dehydrogenase complex. This defect would most directly impair the entry of metabolites derived from which of the following pathways into the TCA cycle?",
+        options: { 
+            A: "Glycolysis", 
+            B: "Beta-oxidation of fatty acids", 
+            C: "Ketone body utilization", 
+            D: "Amino acid catabolism" 
+        },
+        correctAnswer: "A",
+        rationale: "Glycolysis breaks down glucose into pyruvate in the cytoplasm. Pyruvate is then transported into the mitochondria and converted to acetyl-CoA by the pyruvate dehydrogenase complex. This acetyl-CoA is the primary entry point for carbohydrate-derived carbons into the TCA cycle. Beta-oxidation and catabolism of certain amino acids produce acetyl-CoA directly, bypassing this step.",
+        source: "'Glucose --> Pyruvate --> Acetyl CoA --> CITRIC ACID CYCLE.' (Bioenergetics, Page 8)"
+    },
+    {
+        learningObjective: "LO2 (Bioenergetics): Explain the link between the major catabolic pathways, TCA cycle, and electron transport chain to ATP synthesis in the mitochondria.",
+        question: "The catabolism of carbohydrates, fats, and proteins ultimately converges on the TCA cycle through the production of acetyl-CoA. The primary function of the TCA cycle in energy production is to generate which of the following products for the electron transport chain?",
+        options: { 
+            A: "ATP and GTP", 
+            B: "Lactate and pyruvate", 
+            C: "NADH and FADH2", 
+            D: "Carbon dioxide and water" 
+        },
+        correctAnswer: "C",
+        rationale: "While the TCA cycle produces one molecule of GTP (or ATP) per turn via substrate-level phosphorylation, its main energetic contribution is the reduction of NAD+ and FAD to NADH and FADH2. These reduced electron carriers donate their high-energy electrons to the electron transport chain, which drives the bulk of ATP synthesis through oxidative phosphorylation.",
+        source: "'Energy production... TCA cycle [produces] 3 NADH, FADH2.' (Bioenergetics, Page 9)"
+    },
+    {
+        learningObjective: "LO2 (Bioenergetics): Explain the link between the major catabolic pathways, TCA cycle, and electron transport chain to ATP synthesis in the mitochondria.",
+        question: "A patient ingests cyanide, a poison that specifically inhibits Complex IV (cytochrome c oxidase) of the electron transport chain. What is the most immediate consequence of this inhibition on mitochondrial processes?",
+        options: { 
+            A: "Increased ATP synthesis via ATP synthase", 
+            B: "Increased consumption of molecular oxygen", 
+            C: "Accumulation of reduced NADH and FADH2", 
+            D: "Accelerated rate of the TCA cycle" 
+        },
+        correctAnswer: "C",
+        rationale: "The electron transport chain (ETC) functions to re-oxidize NADH and FADH2 by transferring their electrons sequentially to the final electron acceptor, oxygen. If Complex IV, the final complex, is blocked, electrons cannot be transferred to oxygen. This causes a 'backup' in the chain, leading to an accumulation of reduced carriers (NADH and FADH2) because they cannot be re-oxidized. This buildup of reduced carriers, in turn, inhibits the TCA cycle.",
+        source: "'Electrons from NADH and FADH2 flow through and transfer to the final acceptor, oxygen.' (Bioenergetics, Page 13) and the diagram on Page 14 shows the flow of electrons through the complexes, with Cyanide (a Complex IV inhibitor) blocking the final step."
+    },
+    {
+        learningObjective: "LO3 (Bioenergetics): Explain how the energy status in a cell is sensed and explain the significance of AMP, high energy phosphates, and adenylate kinase in cellular energy homeostasis.",
+        question: "In a cell with high energy demand and rapid ATP consumption, the enzyme adenylate kinase becomes highly active. What is the primary role of this enzyme in sensing and responding to the cell's energy status?",
+        options: { 
+            A: "It directly synthesizes ATP from glucose.", 
+            B: "It generates AMP from two molecules of ADP, amplifying the low-energy signal.", 
+            C: "It breaks down creatine phosphate to regenerate ATP.", 
+            D: "It phosphorylates glucose to trap it in the cell." 
+        },
+        correctAnswer: "B",
+        rationale: "Adenylate kinase catalyzes the reversible reaction 2 ADP ↔ ATP + AMP. When ATP is consumed, ADP levels rise. Adenylate kinase converts this ADP into ATP (for immediate use) and AMP. The resulting increase in AMP concentration is a much more sensitive indicator of low energy status than the decrease in ATP itself. AMP then acts as a potent allosteric activator for key catabolic enzymes, such as phosphofructokinase-1 in glycolysis.",
+        source: "'Adenylate kinase catalyzes the interconversion of adenine dinucleotides: 2ADP ↔ AMP +ATP.' (Bioenergetics, Page 17) and the diagram on page 18 shows AK generating AMP, which signals to AMP-sensors like AMPK."
+    },
+    {
+        learningObjective: "LO3 (Bioenergetics): Explain how the energy status in a cell is sensed and explain the significance of AMP, high energy phosphates, and adenylate kinase in cellular energy homeostasis.",
+        question: "During a short, maximal-effort sprint, a skeletal muscle cell rapidly depletes its ATP stores. Which of the following high-energy phosphate compounds is used to quickly regenerate ATP from ADP before glycolysis and oxidative phosphorylation can increase their rates?",
+        options: { 
+            A: "Phosphoenolpyruvate", 
+            B: "1,3-Bisphosphoglycerate", 
+            C: "Creatine phosphate", 
+            D: "Glucose-6-phosphate" 
+        },
+        correctAnswer: "C",
+        rationale: "Creatine phosphate (phosphocreatine) serves as a ready reservoir of high-energy phosphate groups in tissues with high, fluctuating energy demands like skeletal muscle and brain. The enzyme creatine kinase catalyzes the transfer of a phosphate group from creatine phosphate to ADP, rapidly regenerating ATP. This process, called transphosphorylation, buffers ATP levels during the first few seconds of intense activity.",
+        source: "'Phosphocreatine (PCr)/Creatine phosphate serves as a ready source of energy for quick synthesis of ATP from ADP by transphosphorylation.' (Bioenergetics, Page 20)"
+    },
+    {
+        learningObjective: "LO3 (Bioenergetics): Explain how the energy status in a cell is sensed and explain the significance of AMP, high energy phosphates, and adenylate kinase in cellular energy homeostasis.",
+        question: "The 'adenylate energy charge' is an index used to measure the energy stored in a cell. A high energy charge (approximately 0.9) indicates a state where ATP levels are high, and ADP/AMP levels are low. In such a state, which of the following metabolic pathways would be predominantly active?",
+        options: { 
+            A: "ATP-generating (catabolic) pathways", 
+            B: "ATP-utilizing (anabolic) pathways", 
+            C: "Both catabolic and anabolic pathways at maximal rates", 
+            D: "Neither pathway would be active" 
+        },
+        correctAnswer: "B",
+        rationale: "A high adenylate charge signifies an energy-rich state. This signals the cell that there is sufficient energy available for biosynthetic processes. Therefore, ATP-utilizing (anabolic) pathways, such as the synthesis of glycogen, proteins, and fats, will be active. Conversely, ATP-generating (catabolic) pathways will be inhibited to prevent wasteful overproduction of energy.",
+        source: "The graph on page 17 of Bioenergetics shows that at a high energy charge (0.85-0.88), the rate of the U (ATP-utilizing/anabolic) curve is high, while the rate of the R (ATP-generating/catabolic) curve is low."
+    },
+    {
+        learningObjective: "LO4 (Bioenergetics): Describe that the respiratory quotient permits estimation of the mix of metabolic fuels being oxidized and measure the respiratory quotient in a given scenario.",
+        question: "A researcher measures the oxygen consumption and carbon dioxide production of a subject at rest who has been fasting overnight. The calculated respiratory quotient (RQ) is 0.71. This value suggests that the subject's cells are predominantly metabolizing which class of macronutrient for energy?",
+        options: { 
+            A: "Carbohydrates", 
+            B: "Proteins", 
+            C: "Fats", 
+            D: "A mix of carbohydrates and fats" 
+        },
+        correctAnswer: "C",
+        rationale: "The respiratory quotient (RQ) is the ratio of CO2 produced to O2 consumed (RQ = V̇CO2 / V̇O2). The RQ for pure fat oxidation is approximately 0.7, for pure carbohydrate oxidation is 1.0, and for pure protein oxidation is about 0.82. An RQ of 0.71 is very close to 0.7, indicating that fat is the primary fuel source, which is expected in a fasting state.",
+        source: "'SUBTRATE: Fat, RQ: .7' (Bioenergetics, Page 24)"
+    },
+    {
+        learningObjective: "LO4 (Bioenergetics): Describe that the respiratory quotient permits estimation of the mix of metabolic fuels being oxidized and measure the respiratory quotient in a given scenario.",
+        question: "Immediately following a large meal rich in pasta and bread, a healthy individual's respiratory quotient (RQ) is measured. The RQ value would be expected to be closest to which of the following?",
+        options: { 
+            A: "0.7", 
+            B: "0.85", 
+            C: "1.0", 
+            D: "1.2" 
+        },
+        correctAnswer: "C",
+        rationale: "A meal rich in pasta and bread consists primarily of carbohydrates. When carbohydrates are the main fuel source being oxidized, the ratio of CO2 produced to O2 consumed is 1.0, based on the chemical equation for glucose oxidation (C6H12O6 + 6O2 → 6CO2 + 6H2O). Therefore, the RQ would approach 1.0.",
+        source: "'The equation for aerobic respiration of a hexose sugar(carb): C6H12O6 + 6O2 = 6CO2 + 6H2O. R.Q. = 6CO2/6O2 = 1.' (Bioenergetics, Page 24)"
+    },
+    {
+        learningObjective: "LO4 (Bioenergetics): Describe that the respiratory quotient permits estimation of the mix of metabolic fuels being oxidized and measure the respiratory quotient in a given scenario.",
+        question: "A patient with uncontrolled type 1 diabetes is in a state of ketoacidosis. Their body is unable to effectively use glucose and is instead relying heavily on the beta-oxidation of fatty acids for energy. During indirect calorimetry, their respiratory quotient (RQ) is measured. The expected RQ would be:",
+        options: { 
+            A: "Approximately 1.0, indicating carbohydrate use", 
+            B: "Approximately 0.7, indicating fatty acid use", 
+            C: "Greater than 1.0, indicating lipogenesis", 
+            D: "Approximately 0.85, indicating mixed fuel use" 
+        },
+        correctAnswer: "B",
+        rationale: "In uncontrolled type 1 diabetes, lack of insulin prevents glucose uptake and utilization by many tissues. The body compensates by breaking down fats into fatty acids and ketone bodies for energy. This metabolic state is characterized by a heavy reliance on fat oxidation. The RQ for fat oxidation is approximately 0.7.",
+        source: "The table on page 24 of Bioenergetics clearly states that the RQ for fat metabolism is 0.7. The scenario describes a state of exclusive fat metabolism."
+    },
+    {
+        learningObjective: "LO5 (Bioenergetics): Describe how internal and external mechanisms shift cells from catabolic to anabolic states.",
+        question: "After a large, carbohydrate-rich meal, rising blood glucose levels trigger the release of insulin. The internal cellular environment shifts to an anabolic state. Which of the following internal factors is a key mediator that promotes the synthesis of fatty acids in the liver under these conditions?",
+        options: { 
+            A: "High levels of AMP", 
+            B: "High levels of mitochondrial citrate exported to the cytosol", 
+            C: "Low levels of NADH", 
+            D: "High levels of glucagon" 
+        },
+        correctAnswer: "B",
+        rationale: "In a fed state, glycolysis and the TCA cycle are highly active, leading to an abundance of citrate in the mitochondria. This excess citrate is exported to the cytosol, where it serves two main anabolic functions: it is cleaved by ATP citrate lyase to provide acetyl-CoA (the building block for fatty acid synthesis) and it allosterically activates acetyl-CoA carboxylase, the rate-limiting enzyme of fatty acid synthesis.",
+        source: "'Exchanges a citrate made in mitochondrial matrix during the TCA cycle for a malate to convert back to Acetyl CoA (by ATP citrate lyase) for fatty acid synthesis in cytosol/cytoplasm of cell.' (Bioenergetics, Page 29)"
+    },
+    {
+        learningObjective: "LO5 (Bioenergetics): Describe how internal and external mechanisms shift cells from catabolic to anabolic states.",
+        question: "During prolonged fasting, the body enters a catabolic state to maintain blood glucose levels. Which of the following represents a key external mechanism and a corresponding internal hormonal signal that promotes this shift?",
+        options: { 
+            A: "External: Fed state; Internal: High insulin", 
+            B: "External: Sedentary lifestyle; Internal: High leptin", 
+            C: "External: Fasting; Internal: High glucagon", 
+            D: "External: Growth; Internal: Low thyroid hormone" 
+        },
+        correctAnswer: "C",
+        rationale: "Fasting is an external condition that necessitates a shift to catabolism to release stored energy. The primary internal hormonal signal for this state is an increase in glucagon and a decrease in insulin. Glucagon acts on the liver to stimulate glycogenolysis and gluconeogenesis, releasing glucose into the blood.",
+        source: "'External Mechanisms [include] Fed state... Internal [factors include] Secreted factors (cytokines, growth factors, hormones).' (Bioenergetics, Page 25). The hormonal control diagrams on the Clinical Significance PDF (page 18) show that glucagon is released when 'the glucose in the blood is low' (fasting state)."
+    },
+    {
+        learningObjective: "LO5 (Bioenergetics): Describe how internal and external mechanisms shift cells from catabolic to anabolic states.",
+        question: "A bodybuilder consumes a high-protein meal and engages in intense resistance training to build muscle mass. This physiological state is designed to shift muscle cells into an anabolic state. Which combination of internal factors would be expected to be elevated in the muscle cells to promote protein synthesis?",
+        options: { 
+            A: "AMP and NADH", 
+            B: "Succinyl CoA and citrate", 
+            C: "ATP and secreted growth factors", 
+            D: "Glucagon and cortisol" 
+        },
+        correctAnswer: "C",
+        rationale: "Anabolism, such as building muscle protein, is an energy-intensive process. Therefore, a high availability of ATP is required. Additionally, external factors like exercise and diet stimulate the release of internal growth factors (like IGF-1) and hormones (like testosterone) that signal the muscle cells to increase protein synthesis.",
+        source: "'Internal [factors shifting to anabolic state include] Secreted factors (cytokines, growth factors, hormones), ATP bioavailability.' (Bioenergetics, Page 25)"
+    },
+    {
+        learningObjective: "LO1 (Clinical Significance): Describe the importance of glycolysis in the erythrocyte, including its role in regulating hemoglobin affinity, and structural integrity of the cell.",
+        question: "A 22-year-old male presents with chronic fatigue and jaundice. Lab tests reveal hemolytic anemia. A deficiency in an enzyme of the glycolytic pathway is suspected. The inability of his erythrocytes to produce sufficient ATP via glycolysis would most directly lead to which of the following cellular defects?",
+        options: { 
+            A: "Failure of the Na+/K+-ATPase pump, leading to osmotic lysis", 
+            B: "Inability to synthesize 2,3-bisphosphoglycerate (2,3-BPG)", 
+            C: "Oxidative damage due to insufficient NADPH", 
+            D: "Decreased hemoglobin affinity for oxygen" 
+        },
+        correctAnswer: "A",
+        rationale: "Erythrocytes are entirely dependent on glycolysis for ATP production. ATP is crucial for maintaining the function of ion pumps, such as the Na+/K+-ATPase. Failure of this pump leads to an influx of Na+ and water, causing the cell to swell and become a rigid echinocyte, which is then destroyed by the spleen (extravascular hemolysis), resulting in hemolytic anemia.",
+        source: "'Defective glycolysis can cause hemolytic anemia... Reduced deformability of RBC causes echinocytes (RBC with thorny projections), leading to extravascular hemolysis...' (Clinical Significance of Metabolic Pathways, Page 7)"
+    },
+    {
+        learningObjective: "LO1 (Clinical Significance): Describe the importance of glycolysis in the erythrocyte, including its role in regulating hemoglobin affinity, and structural integrity of the cell.",
+        question: "A person travels to a high-altitude location where the partial pressure of oxygen is low. To adapt, their body increases the synthesis of 2,3-bisphosphoglycerate (2,3-BPG) in erythrocytes. What is the primary function of this increased 2,3-BPG?",
+        options: { 
+            A: "To increase hemoglobin's affinity for oxygen, improving uptake in the lungs", 
+            B: "To decrease hemoglobin's affinity for oxygen, enhancing delivery to tissues", 
+            C: "To provide an alternative source of ATP for the erythrocyte", 
+            D: "To protect the erythrocyte from oxidative damage" 
+        },
+        correctAnswer: "B",
+        rationale: "2,3-BPG is a negative allosteric regulator of hemoglobin. It binds to deoxyhemoglobin and stabilizes the T (tense) state, which has a lower affinity for oxygen. By decreasing hemoglobin's oxygen affinity, 2,3-BPG facilitates the release of oxygen from hemoglobin to the peripheral tissues, which is crucial for adaptation to high altitude or conditions of hypoxia.",
+        source: "'Erythrocyte DPG helps hemoglobin deliver oxygen to tissues.' The graph on the same page shows that 'More DPG' shifts the oxygen-hemoglobin dissociation curve to the right, indicating reduced affinity and enhanced O2 release. (Clinical Significance of Metabolic Pathways, Page 8)"
+    },
+    {
+        learningObjective: "LO1 (Clinical Significance): Describe the importance of glycolysis in the erythrocyte, including its role in regulating hemoglobin affinity, and structural integrity of the cell.",
+        question: "A newborn is diagnosed with a severe deficiency in hexokinase within their erythrocytes. This deficiency leads to a left shift in the hemoglobin-oxygen dissociation curve. This shift is most likely caused by a decreased concentration of which glycolytic intermediate?",
+        options: { 
+            A: "ATP", 
+            B: "Pyruvate", 
+            C: "Lactate", 
+            D: "2,3-bisphosphoglycerate (2,3-BPG)" 
+        },
+        correctAnswer: "D",
+        rationale: "A hexokinase deficiency impairs the very first step of glycolysis, drastically reducing the formation of all downstream intermediates, including 1,3-BPG, which is the precursor for 2,3-BPG. Low levels of 2,3-BPG mean less stabilization of the T-state of hemoglobin. This causes the hemoglobin to have a higher affinity for oxygen, resulting in a left shift of the dissociation curve and impaired oxygen delivery to tissues.",
+        source: "The summary table shows that hexokinase (HK) deficiency causes a 'Left Shift'. (Clinical Significance of Metabolic Pathways, Page 10). The diagram on page 9 shows that a block early in glycolysis (at hexokinase) will prevent the formation of 2,3-bisphosphoglycerate, which is responsible for the right shift."
+    },
+    {
+        learningObjective: "LO2 (Clinical Significance): Explain the clinical significance of anaerobic glycolysis.",
+        question: "A 55-year-old man with a history of severe coronary artery disease experiences an acute myocardial infarction. The affected heart muscle becomes ischemic, and the cells switch to anaerobic glycolysis for energy. The accumulation of which of the following metabolic end products is a major contributor to the localized pain (angina) and cellular damage?",
+        options: { 
+            A: "Acetyl-CoA", 
+            B: "Lactate", 
+            C: "Pyruvate", 
+            D: "Carbon dioxide" 
+        },
+        correctAnswer: "B",
+        rationale: "Under anaerobic conditions (ischemia), pyruvate cannot enter the TCA cycle and is instead converted to lactate by lactate dehydrogenase to regenerate NAD+ for glycolysis to continue. The buildup of lactate leads to a decrease in intracellular pH (lactic acidosis), which contributes to pain, inhibits glycolytic enzymes, and can lead to cellular damage.",
+        source: "'Increased production [of lactate]: hypoxia due to: -anemia, cardiac arrest.' The symptoms of lactic acidosis include 'Muscle cramps or pain'. (Clinical Significance of Metabolic Pathways, Page 6)"
+    },
+    {
+        learningObjective: "LO2 (Clinical Significance): Explain the clinical significance of anaerobic glycolysis.",
+        question: "An elite sprinter completes a 100-meter dash in under 10 seconds. During this maximal-effort, short-duration exercise, her leg muscles rely almost exclusively on anaerobic glycolysis. The primary purpose of converting pyruvate to lactate in her muscles during the sprint is to:",
+        options: { 
+            A: "Generate additional ATP through substrate-level phosphorylation", 
+            B: "Produce acetyl-CoA for the TCA cycle", 
+            C: "Regenerate NAD+ to allow glycolysis to continue", 
+            D: "Export excess protons from the muscle cell" 
+        },
+        correctAnswer: "C",
+        rationale: "The glyceraldehyde-3-phosphate dehydrogenase step in glycolysis requires NAD+ as an electron acceptor. During intense exercise, the demand for ATP outpaces the capacity of the electron transport chain to re-oxidize NADH. To prevent glycolysis from halting due to a lack of NAD+, pyruvate is reduced to lactate, a reaction that oxidizes NADH back to NAD+.",
+        source: "The diagram of 'Aerobic and anaerobic glycolysis' shows the conversion of Pyruvate to Lactate coupled with the conversion of NADH back to NAD+. (Clinical Significance of Metabolic Pathways, Page 6)"
+    },
+    {
+        learningObjective: "LO2 (Clinical Significance): Explain the clinical significance of anaerobic glycolysis.",
+        question: "A patient in septic shock has widespread tissue hypoperfusion. A blood gas analysis reveals a severe metabolic acidosis with a high anion gap, and a plasma lactate level of 10 mmol/L (normal < 2 mmol/L). This condition is a direct consequence of:",
+        options: { 
+            A: "Increased gluconeogenesis in the liver", 
+            B: "Overproduction of ketone bodies", 
+            C: "Widespread cellular switch to anaerobic glycolysis", 
+            D: "Failure of the Cori cycle due to kidney damage" 
+        },
+        correctAnswer: "C",
+        rationale: "Septic shock leads to poor tissue perfusion (hypoxia), forcing cells throughout the body to switch from aerobic respiration to anaerobic glycolysis to produce ATP. This results in the massive production of lactic acid, which overwhelms the buffering capacity of the blood and the clearance capacity of the liver (Cori cycle), leading to severe lactic acidosis.",
+        source: "'Lactic Acidosis... Increased production: hypoxia due to: ... -regional hypoperfusion'. (Clinical Significance of Metabolic Pathways, Page 6)"
+    },
+    {
+        learningObjective: "LO3 (Clinical Significance): Explain the basis of the symptoms arising from glycolytic enzyme deficiency.",
+        question: "A 19-year-old male is diagnosed with Tarui's disease (Glycogen Storage Disease Type VII), a deficiency of the muscle isozyme of phosphofructokinase-1 (PFK-1). He experiences painful muscle cramps and weakness upon strenuous exercise. He also has a mild, chronic hemolytic anemia. The hemolysis is due to PFK-1 deficiency in which cell type?",
+        options: { 
+            A: "Hepatocytes", 
+            B: "Skeletal myocytes", 
+            C: "Erythrocytes", 
+            D: "Cardiomyocytes" 
+        },
+        correctAnswer: "C",
+        rationale: "While the most prominent symptoms of Tarui's disease are in the muscle, erythrocytes also rely on glycolysis for all their energy needs. A deficiency in PFK-1, a key regulatory enzyme, impairs ATP production in red blood cells, leading to membrane instability and premature destruction (hemolysis).",
+        source: "'Phosphofructokinase (PFK-M) deficiency (GSD VII; Tarui's disease)... with hemolysis (RBC M2L2).' (Clinical Significance of Metabolic Pathways, Page 32) and 'Summary of glycolytic enzyme deficiencies... PFK... Hemolytic anemia.' (Page 10)"
+    },
+    {
+        learningObjective: "LO3 (Clinical Significance): Explain the basis of the symptoms arising from glycolytic enzyme deficiency.",
+        question: "A patient has a deficiency in pyruvate kinase (PK). This deficiency results in hemolytic anemia. Lab analysis of their erythrocytes would likely show an accumulation of upstream glycolytic intermediates and an elevated level of which compound that affects hemoglobin function?",
+        options: { 
+            A: "NADH", 
+            B: "Glucose-6-phosphate", 
+            C: "2,3-bisphosphoglycerate (2,3-BPG)", 
+            D: "Fructose-1,6-bisphosphate" 
+        },
+        correctAnswer: "C",
+        rationale: "A deficiency in pyruvate kinase, the final enzyme in the glycolytic pathway, causes a 'backup' of intermediates upstream. This includes the intermediates of the Rapoport-Luebering shunt, leading to increased levels of 2,3-BPG. High 2,3-BPG levels cause a right-shift in the hemoglobin-oxygen dissociation curve, decreasing oxygen affinity.",
+        source: "'Summary of glycolytic enzyme deficiencies... PK... Right shift of Hb-oxygen dissociation curve...' (Clinical Significance of Metabolic Pathways, Page 10)"
+    },
+    {
+        learningObjective: "LO3 (Clinical Significance): Explain the basis of the symptoms arising from glycolytic enzyme deficiency.",
+        question: "Compared to a pyruvate kinase deficiency, a hexokinase deficiency results in a more severe hemolytic anemia and does not cause a right-shift in the hemoglobin-oxygen dissociation curve. This is because a hexokinase deficiency also impairs which linked pathway that is crucial for erythrocyte survival?",
+        options: { 
+            A: "The Cori cycle", 
+            B: "The pentose phosphate pathway", 
+            C: "Gluconeogenesis", 
+            D: "Fatty acid synthesis" 
+        },
+        correctAnswer: "B",
+        rationale: "The entry point for the pentose phosphate pathway (PPP) is glucose-6-phosphate, the product of the hexokinase reaction. The PPP is the sole source of NADPH in erythrocytes, which is essential for protecting the cell against oxidative damage. A hexokinase deficiency starves both glycolysis (for ATP) and the PPP (for NADPH), leading to severe hemolysis. It also prevents the synthesis of 2,3-BPG, causing a left-shift in the Hb-O2 curve.",
+        source: "'The fates of gluc-6-P... Pentose phosphate: Antioxidants and nucleotides.' (Clinical Significance of Metabolic Pathways, Page 4). A deficiency before this step (i.e., at hexokinase) would block this pathway."
+    },
+    {
+        learningObjective: "LO4 (Clinical Significance): Describe the outcome of deficient gluconeogenesis resulting from genetic defects or excess ethanol consumption.",
+        question: "A chronic alcoholic is brought to the emergency department with confusion and lethargy after a 3-day binge without eating. His blood glucose is 35 mg/dL. The metabolism of ethanol in the liver severely impairs gluconeogenesis primarily by causing a massive increase in the ratio of which of the following?",
+        options: { 
+            A: "ATP to ADP", 
+            B: "NADH to NAD+", 
+            C: "GTP to GDP", 
+            D: "Acetyl-CoA to CoA" 
+        },
+        correctAnswer: "B",
+        rationale: "The two-step oxidation of ethanol to acetate in the liver consumes two molecules of NAD+, converting them to NADH. This dramatically increases the hepatic NADH/NAD+ ratio. Several key steps in gluconeogenesis (conversion of lactate to pyruvate, glycerol-3-phosphate to DHAP, and malate to oxaloacetate) require NAD+ as an oxidizing agent. The high NADH/NAD+ ratio inhibits these reactions, thus blocking gluconeogenesis and leading to severe hypoglycemia in a fasting individual.",
+        source: "'The increased NADH effectively limits the availability of glucogenic substrates since conversion... requires oxidized NAD+.' (Supplementary Handout, Page 57)"
+    },
+    {
+        learningObjective: "LO4 (Clinical Significance): Describe the outcome of deficient gluconeogenesis resulting from genetic defects or excess ethanol consumption.",
+        question: "An infant presents with failure to thrive, hypoglycemia, and severe lactic acidosis. A liver biopsy reveals a deficiency of pyruvate carboxylase. This enzyme deficiency directly blocks the synthesis of which crucial intermediate required for gluconeogenesis?",
+        options: { 
+            A: "Phosphoenolpyruvate", 
+            B: "Malate", 
+            C: "Oxaloacetate", 
+            D: "Fructose-1,6-bisphosphate" 
+        },
+        correctAnswer: "C",
+        rationale: "Gluconeogenesis bypasses the irreversible pyruvate kinase step of glycolysis in two steps. The first step is the carboxylation of pyruvate to form oxaloacetate, catalyzed by pyruvate carboxylase in the mitochondria. Oxaloacetate is then converted to phosphoenolpyruvate. A deficiency in pyruvate carboxylase blocks this initial, essential step, preventing gluconeogenic precursors like lactate, pyruvate, and alanine from being converted to glucose.",
+        source: "'Defects in gluconeogenesis: The inability to convert lactic acid into glucose leads to hypoglycemia, and lactatemia and lactic acidosis.' The pathway diagram shows Pyruvate Carboxylase converting Pyruvate to Oxaloacetate. (Clinical Significance of Metabolic Pathways, Page 23)"
+    },
+    {
+        learningObjective: "LO4 (Clinical Significance): Describe the outcome of deficient gluconeogenesis resulting from genetic defects or excess ethanol consumption.",
+        question: "A patient with a genetic deficiency in fructose-1,6-bisphosphatase would be expected to have which of the following clinical presentations during a period of fasting?",
+        options: { 
+            A: "Hyperglycemia and reduced blood lactate", 
+            B: "Hypoglycemia and lactic acidosis", 
+            C: "Normal blood glucose and ketosis", 
+            D: "Hyperglycemia and ketoacidosis" 
+        },
+        correctAnswer: "B",
+        rationale: "Fructose-1,6-bisphosphatase is a key regulatory enzyme in gluconeogenesis, catalyzing the conversion of fructose-1,6-bisphosphate to fructose-6-phosphate. A deficiency in this enzyme creates a block in the gluconeogenic pathway. During fasting, the liver cannot synthesize glucose, leading to hypoglycemia. Precursors like lactate and alanine will be converted to pyruvate and enter the pathway, but they will accumulate as fructose-1,6-bisphosphate and upstream intermediates, with excess pyruvate being shunted to lactate, causing lactic acidosis.",
+        source: "'Defects in gluconeogenesis: The inability to convert lactic acid into glucose leads to hypoglycemia, and lactatemia and lactic acidosis.' (Clinical Significance of Metabolic Pathways, Page 23). The pathway diagram on the same page shows fructose-1,6-bisphosphatase as a key unique enzyme of gluconeogenesis."
+    },
+    {
+        learningObjective: "LO5 (Clinical Significance): Identify symptoms of glycogen storage diseases and explain the underlying causes.",
+        question: "A 6-month-old infant is brought to the pediatrician for evaluation of a markedly protuberant abdomen and poor growth. Physical examination reveals massive hepatomegaly. Laboratory studies following a short fast show severe hypoglycemia, lactic acidosis, hyperuricemia, and hyperlipidemia. A deficiency in which of the following enzymes is the most likely diagnosis?",
+        options: { 
+            A: "Muscle glycogen phosphorylase (McArdle disease)", 
+            B: "Glucose-6-phosphatase (von Gierke disease)", 
+            C: "Lysosomal α-1,4-glucosidase (Pompe disease)", 
+            D: "Debranching enzyme (Cori disease)" 
+        },
+        correctAnswer: "B",
+        rationale: "This clinical presentation is classic for von Gierke disease (Type I GSD), which is caused by a deficiency of glucose-6-phosphatase. This enzyme is required for the final step of both glycogenolysis and gluconeogenesis in the liver. Its absence prevents the liver from releasing free glucose into the blood, causing severe fasting hypoglycemia. The other metabolic derangements are secondary to this primary defect.",
+        source: "'VON GIERKE'S DISEASE... Defective enzyme: Glucose 6-phosphatase... Clinical features: Massive enlargement of the liver. Failure to thrive. Severe hypoglycemia, ketosis, hyperuricemia, hyperlipemia.' (Clinical Significance of Metabolic Pathways, Page 25)"
+    },
+    {
+        learningObjective: "LO5 (Clinical Significance): Identify symptoms of glycogen storage diseases and explain the underlying causes.",
+        question: "A 25-year-old man reports that he experiences painful muscle cramps, fatigue, and dark-colored urine after strenuous exercise. He notes a 'second wind' phenomenon where he can resume exercise with less difficulty if he rests for a short period. His fasting blood glucose is normal, and he has no hepatomegaly. This patient most likely has a deficiency in which enzyme?",
+        options: { 
+            A: "Liver glycogen phosphorylase (Hers disease)", 
+            B: "Glucose-6-phosphatase (von Gierke disease)", 
+            C: "Muscle glycogen phosphorylase (McArdle disease)", 
+            D: "Branching enzyme (Andersen disease)" 
+        },
+        correctAnswer: "C",
+        rationale: "McArdle disease (Type V GSD) is caused by a deficiency of myophosphorylase, the muscle isozyme of glycogen phosphorylase. This prevents the breakdown of muscle glycogen to provide glucose for glycolysis during exercise, leading to energy deficiency, cramps, and rhabdomyolysis (causing myoglobinuria, or dark urine). The liver isozyme is normal, so fasting blood glucose is maintained.",
+        source: "'MCARDLE'S DISEASE... Defective enzyme: Phosphorylase, Organ affected: Muscle... Clinical features: Limited ability to perform strenuous exercise because of painful muscle cramps.' (Clinical Significance of Metabolic Pathways, Page 25)"
+    },
+    {
+        learningObjective: "LO5 (Clinical Significance): Identify symptoms of glycogen storage diseases and explain the underlying causes.",
+        question: "A 4-month-old infant presents with cardiomegaly, severe generalized muscle weakness ('floppy baby'), and respiratory distress. A muscle biopsy shows massive accumulation of glycogen within lysosomes. This patient's condition is caused by a deficiency in which enzyme?",
+        options: { 
+            A: "Debranching enzyme", 
+            B: "Phosphofructokinase", 
+            C: "Glucose-6-phosphatase", 
+            D: "Lysosomal α-1,4-glucosidase" 
+        },
+        correctAnswer: "D",
+        rationale: "Pompe disease (Type II GSD) is unique among the glycogen storage diseases because it is a lysosomal storage disorder. It is caused by a deficiency of acid alpha-glucosidase (lysosomal α-1,4-glucosidase), leading to glycogen accumulation in the lysosomes of virtually all cells, with the most severe effects on cardiac, skeletal, and respiratory muscles. This leads to progressive muscle weakness and cardiorespiratory failure.",
+        source: "'POMPE'S DISEASE... Defective enzyme: α-1,4-Glucosidase (lysosomal)... Clinical features: Cardiorespiratory failure causes death, usually before age 2.' (Clinical Significance of Metabolic Pathways, Page 25)"
+    },
+    {
+        learningObjective: "LO1 (Energy Balance): Explain the fuel composition of the body. Define basal metabolic rate (BMR) and factors affecting it and calculate daily energy expenditure for an individual",
+        question: "A 35-year-old sedentary male who weighs 80 kg wants to calculate his total daily energy expenditure (TDEE). His largest component of TDEE, accounting for the minimum energy required to sustain life at rest, is known as what?",
+        options: { 
+            A: "Thermic Effect of Food (TEF)", 
+            B: "Non-Exercise Activity Thermogenesis (NEAT)", 
+            C: "Basal Metabolic Rate (BMR)", 
+            D: "Exercise Activity Thermogenesis (EAT)" 
+        },
+        correctAnswer: "C",
+        rationale: "The Basal Metabolic Rate (BMR) is the largest component of total daily energy expenditure for most individuals, typically accounting for 60-75% of the total. It represents the energy expended for basic physiological functions like breathing, circulation, and cellular metabolism while the body is in a state of complete rest.",
+        source: "'BMR or Basal Metabolic Rate = the minimum energy expenditure required to sustain life in a resting individual.' (Energy Balance, Page 3)"
+    },
+    {
+        learningObjective: "LO1 (Energy Balance): Explain the fuel composition of the body. Define basal metabolic rate (BMR) and factors affecting it and calculate daily energy expenditure for an individual",
+        question: "Two 40-year-old women have the same height and weight. Woman A has a body composition of 20% muscle and 35% fat. Woman B has a body composition of 30% muscle and 25% fat. All other factors being equal, which woman would be expected to have a higher Basal Metabolic Rate (BMR)?",
+        options: { 
+            A: "Woman A, because fat tissue is more metabolically active.", 
+            B: "Woman B, because lean body mass (muscle) is more metabolically active.", 
+            C: "Their BMRs would be identical because they have the same total body mass.", 
+            D: "It is impossible to determine without knowing their diet." 
+        },
+        correctAnswer: "B",
+        rationale: "Lean body mass, particularly skeletal muscle, is significantly more metabolically active at rest than adipose tissue. Therefore, an individual with a higher percentage of muscle mass will have a higher BMR. Woman B has more muscle and less fat, so she will burn more calories at rest compared to Woman A.",
+        source: "'Lean Body Mass – More Muscle, Higher BMR.' (Energy Balance, Page 7)"
+    },
+    {
+        learningObjective: "LO1 (Energy Balance): Explain the fuel composition of the body. Define basal metabolic rate (BMR) and factors affecting it and calculate daily energy expenditure for an individual",
+        question: "A patient consumes a meal consisting solely of 100 grams of lean chicken breast (protein). The increase in their metabolic rate following this meal, known as the Thermic Effect of Food (TEF), would be greatest compared to a meal of equal caloric value consisting of which of the following?",
+        options: { 
+            A: "Pure glucose (carbohydrate)", 
+            B: "Olive oil (fat)", 
+            C: "A mixed meal of protein, fat, and carbohydrate", 
+            D: "The TEF is the same for all macronutrients" 
+        },
+        correctAnswer: "B",
+        rationale: "The Thermic Effect of Food (TEF) is highest for protein (20-30% of calories consumed), followed by carbohydrates (5-10%), and is lowest for fats (0-3%). The metabolic cost of digesting, absorbing, and processing protein, including urea synthesis, is much higher than for other macronutrients.",
+        source: "'Protein metabolism results in the largest increase in MR [metabolic rate] due to the associated urea synthesis, gluconeogenesis, etc.' (Energy Balance, Page 6)"
+    },
+    {
+        learningObjective: "LO2 (Energy Balance): Calculate the caloric content in any given diet and estimate whether it would support weight gain or weight loss",
+        question: "A college student tracks their food intake for a day. They consumed 200 grams of carbohydrates, 80 grams of protein, and 60 grams of fat. What is the total caloric content of their intake for the day?",
+        options: { 
+            A: "1620 kcal", 
+            B: "2080 kcal", 
+            C: "1660 kcal", 
+            D: "1880 kcal" 
+        },
+        correctAnswer: "C",
+        rationale: "The caloric content is calculated using the standard values: Carbohydrates = 4 kcal/gram, Protein = 4 kcal/gram, and Fat = 9 kcal/gram. Calculation: (200g Carb * 4 kcal/g) + (80g Protein * 4 kcal/g) + (60g Fat * 9 kcal/g) = 800 kcal + 320 kcal + 540 kcal = 1660 kcal.",
+        source: "'Carbohydrates = ... One gram of carbs = 4 calories. Fats = ... One gram of fat = 9 calories. Proteins = ... One gram of protein= 4 calories.' (Energy Balance, Page 4)"
+    },
+    {
+        learningObjective: "LO2 (Energy Balance): Calculate the caloric content in any given diet and estimate whether it would support weight gain or weight loss",
+        question: "A 40-year-old woman's total daily energy expenditure (TDEE) is estimated to be 2000 kcal. She adopts a new diet where she consumes 1800 kcal per day. Assuming her activity level remains constant, this caloric deficit would be expected to lead to which of the following over time?",
+        options: { 
+            A: "Weight gain", 
+            B: "Weight maintenance", 
+            C: "Weight loss", 
+            D: "An increase in basal metabolic rate" 
+        },
+        correctAnswer: "C",
+        rationale: "Weight change is governed by the energy balance equation (Energy In vs. Energy Out). When energy intake (1800 kcal) is consistently less than energy expenditure (2000 kcal), a caloric deficit is created. The body must then mobilize stored energy (primarily from fat) to meet its needs, resulting in weight loss.",
+        source: "The diagram on page 2 of the Energy Balance presentation shows a seesaw where 'Energy In < Energy Out' leads to 'Weight Loss'."
+    },
+    {
+        learningObjective: "LO2 (Energy Balance): Calculate the caloric content in any given diet and estimate whether it would support weight gain or weight loss",
+        question: "The concept of 'caloric balance' is critical for weight management. A chronic positive energy balance of just 1% over a lifetime can lead to significant weight gain. If an individual has a TDEE of 2500 kcal/day, a 1% positive imbalance corresponds to consuming how many extra calories per day?",
+        options: { 
+            A: "2.5 kcal", 
+            B: "25 kcal", 
+            C: "100 kcal", 
+            D: "250 kcal" 
+        },
+        correctAnswer: "B",
+        rationale: "A 1% error or imbalance means consuming 1% more calories than expended. 1% of 2500 kcal is calculated as 2500 * 0.01 = 25 kcal. While this seems small, over many years, this slight daily surplus can lead to a substantial accumulation of body fat and significant weight gain.",
+        source: "'A chronic 1% error is 511,000 kcal... Over the 70 years, a 1% error results in a weight gain of 56.7 kg or 125 lbs.' (Energy Balance, Page 12). This demonstrates the profound impact of a small, chronic imbalance."
+    },
+    {
+        learningObjective: "LO3 (Energy Balance): Define body mass index (BMI). Describe the calculation and categorization of individuals based on BMI and based on waist circumference",
+        question: "A 50-year-old woman is 1.60 meters tall and weighs 70 kilograms. What is her Body Mass Index (BMI), and how would she be categorized?",
+        options: { 
+            A: "21.5 kg/m², Normal weight", 
+            B: "27.3 kg/m², Overweight", 
+            C: "30.6 kg/m², Obese (Grade I)", 
+            D: "43.8 kg/m², Obese (Grade III)" 
+        },
+        correctAnswer: "B",
+        rationale: "BMI is calculated as weight in kilograms divided by the square of height in meters. Calculation: BMI = 70 kg / (1.60 m * 1.60 m) = 70 / 2.56 = 27.34 kg/m². According to standard BMI categories, a value between 25.0 and 29.9 is classified as Overweight.",
+        source: "'The Body Mass Index (BMI) – wt in Kg / (height in M)². 25-29.9 – Grade I Overweight.' (Energy Balance, Page 10)"
+    },
+    {
+        learningObjective: "LO3 (Energy Balance): Define body mass index (BMI). Describe the calculation and categorization of individuals based on BMI and based on waist circumference",
+        question: "A patient has a BMI of 32.5 kg/m². According to the standard classification, this patient would be categorized as:",
+        options: { 
+            A: "Normal weight", 
+            B: "Overweight", 
+            C: "Obese (Grade I)", 
+            D: "Obese (Grade II)" 
+        },
+        correctAnswer: "D",
+        rationale: "The standard BMI categories are as follows: <18.5 is thin, 18.5-24.9 is normal, 25-29.9 is overweight, 30-39.9 is obese. A BMI of 32.5 kg/m² falls within the 30-39.9 range, which is classified as Grade II Overweight, or simply 'Obese'.",
+        source: "'30-39.9 – Grade II Overweight (Obese).' (Energy Balance, Page 10)"
+    },
+    {
+        learningObjective: "LO3 (Energy Balance): Define body mass index (BMI). Describe the calculation and categorization of individuals based on BMI and based on waist circumference",
+        question: "While BMI is a useful screening tool, it does not account for body composition or fat distribution. For assessing the risk of metabolic diseases like type 2 diabetes and cardiovascular disease, measuring waist circumference is also important because it provides an estimate of:",
+        options: { 
+            A: "Total body fat percentage", 
+            B: "Subcutaneous fat in the lower body", 
+            C: "Visceral (intra-abdominal) fat", 
+            D: "Lean muscle mass" 
+        },
+        correctAnswer: "C",
+        rationale: "Waist circumference is a good indicator of visceral adiposity, which is the fat stored around the internal organs in the abdominal cavity. This type of fat is more metabolically active and is strongly associated with insulin resistance, inflammation, and a higher risk for cardiometabolic diseases compared to subcutaneous fat stored elsewhere in the body.",
+        source: "The provided documents focus on BMI calculation and classification. This question tests a related clinical concept implied by the need for tools beyond simple weight/height ratios for health assessment, a standard part of understanding the clinical application of BMI."
+    }
+];
+
+        const quizContainer = document.getElementById('quiz-container');
+        const themeToggleButton = document.getElementById('theme-toggle-button');
+        const bodyElement = document.body;
+
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                bodyElement.classList.add('light-theme');
+                themeToggleButton.textContent = 'Switch to Dark Mode';
+            } else {
+                bodyElement.classList.remove('light-theme');
+                themeToggleButton.textContent = 'Switch to Light Mode';
+            }
+            localStorage.setItem('quizTheme', theme);
+        }
+
+        function loadQuiz() {
+            quizData.forEach((qData, index) => {
+                const questionBlock = document.createElement('div');
+                questionBlock.classList.add('question-block');
+                questionBlock.id = `q${index}`;
+
+                const loText = document.createElement('div');
+                loText.classList.add('learning-objective');
+                loText.textContent = qData.learningObjective;
+                questionBlock.appendChild(loText);
+
+                const questionText = document.createElement('p');
+                questionText.classList.add('question-text');
+                // Use innerHTML to correctly render any potential HTML tags in questions
+                questionText.innerHTML = `${index + 1}. ${qData.question}`;
+                questionBlock.appendChild(questionText);
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.classList.add('options');
+
+                for (const optionKey in qData.options) {
+                    const optionId = `q${index}_${optionKey}`;
+                    const label = document.createElement('label');
+                    label.htmlFor = optionId;
+
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.name = `q${index}`;
+                    radioInput.value = optionKey;
+                    radioInput.id = optionId;
+
+                    const labelText = document.createElement('span');
+                    labelText.innerHTML = ` ${optionKey}. ${qData.options[optionKey]}`;
+                    
+                    label.appendChild(radioInput);
+                    label.appendChild(labelText);
+                    optionsDiv.appendChild(label);
+                }
+                questionBlock.appendChild(optionsDiv);
+
+                const buttonContainer = document.createElement('div');
+                buttonContainer.classList.add('button-container');
+
+                const checkButton = document.createElement('button');
+                checkButton.textContent = 'Check Answer';
+                checkButton.classList.add('check-button');
+                checkButton.addEventListener('click', () => checkAnswer(index));
+                buttonContainer.appendChild(checkButton);
+                
+                questionBlock.appendChild(buttonContainer);
+
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.classList.add('feedback');
+                questionBlock.appendChild(feedbackDiv);
+
+                quizContainer.appendChild(questionBlock);
+            });
+        }
+
+        function checkAnswer(questionIndex) {
+            const questionBlockElement = document.getElementById(`q${questionIndex}`);
+            const selectedRadioButton = questionBlockElement.querySelector('input[type="radio"]:checked');
+            const feedbackDiv = questionBlockElement.querySelector('.feedback');
+
+            if (!selectedRadioButton) {
+                 feedbackDiv.innerHTML = `<span class="feedback-status">Please select an answer.</span>`;
+                 feedbackDiv.className = 'feedback incorrect'; // Use incorrect styling for the alert
+                return;
+            }
+
+            const selectedOptionKey = selectedRadioButton.value;
+            const qData = quizData[questionIndex];
+            const correct = selectedOptionKey === qData.correctAnswer;
+
+            let feedbackHTML = '';
+
+            if (correct) {
+                feedbackHTML = `<span class="feedback-status">Correct!</span>`;
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                 feedbackHTML = `<span class="feedback-status">Incorrect.</span> The correct answer is ${qData.correctAnswer}.`;
+                feedbackDiv.className = 'feedback incorrect';
+            }
+
+            feedbackHTML += `<div class="feedback-rationale"><strong>Rationale:</strong> ${qData.rationale}</div>`;
+            feedbackHTML += `<div class="feedback-source">${qData.source}</div>`;
+            feedbackDiv.innerHTML = feedbackHTML;
+        }
+
+        themeToggleButton.addEventListener('click', () => {
+            if (bodyElement.classList.contains('light-theme')) {
+                applyTheme('dark');
+            } else {
+                applyTheme('light');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+            applyTheme(savedTheme);
+            loadQuiz();
+        });
+
+    </script>
+
+</body>
+</html>
